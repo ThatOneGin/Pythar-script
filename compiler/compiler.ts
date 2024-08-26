@@ -6,7 +6,7 @@
  * to generate lua code.
  */
 
-import { BinaryExpr, CallExpr, ForStmt, FunctionDeclaration, Identifier, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
+import { BinaryExpr, CallExpr, ForStmt, FunctionDeclaration, Identifier, IfStmt, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
 import { TokenType } from "../frontend/lexer.ts";
 export function codegenerator(node: any): any {
     switch (node.kind) {
@@ -32,6 +32,8 @@ export function codegenerator(node: any): any {
             return c_callexpr(node as CallExpr);
         case "Program":
             return node.body.map(codegenerator);
+        case "IfStmt":
+            return c_ifstmt(node as IfStmt);
         default:
             console.log(node)
             throw new TypeError(`Unrecognized type found. '${node.kind}'`);
@@ -126,6 +128,28 @@ function c_callexpr(node: CallExpr) {
     }
 
     return `${name}(${args})`;
+}
+
+function c_ifstmt(node: IfStmt) {
+    const test = codegenerator(node.test)
+    let body = ""
+    let alt = ""
+
+    if (node.alt !== undefined) {
+        for (let i = 0; i < node.alt.length; i++) {
+            alt += codegenerator(node.alt[i])+"\n";
+        }
+    }
+
+    for (let i = 0; i < node.body.length; i++) {
+        body += codegenerator(node.body[i])+"\n";
+    }
+
+    if (alt.length > 0) {
+        return `if ${test} then \n${body}else\n${alt}end`
+    }
+
+    return `if ${test} then ${body}end`
 }
 
 export default class writer {
