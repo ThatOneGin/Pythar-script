@@ -22,24 +22,24 @@ import { Token, tokenize, TokenType } from "../frontend/lexer.ts";
 
 /**
  * Welcome to the parser, here is where the syntax of the language starts
- * 
+ *
  * here is some information about the syntax and how it works:
- * 
+ *
  * 	functions:
  * 	declared with fn keyword and a particularity of it is that the functions
  * 	return the last expression inside of its body.
- * 	
+ *
  * 	structure of functions:
  * 		fn <fn_name> ( arguments ) {
  * 			fn_body
  * 		}
- * 
+ *
  * 	variables:
  * 	can be declared with var (immut || mut) or (let || const) like standard languages
- *	
+ *
  *	structure of variables:
  *     ( let |const |var mut |var imut ) snake = "cup"
- * 
+ *
  * next process will be the code generator
  */
 
@@ -185,7 +185,7 @@ export default class Parser {
 		} as VarDeclaration;
 
 		this.expect(TokenType.Semicolon, "Expected \; following var expression")
-	
+
 		return declaration;
 	}
 
@@ -375,7 +375,7 @@ export default class Parser {
 	}
 
 	//parse function arguments list.
-	//fn <fn_name> 
+	//fn <fn_name>
 	//( arglist )
 	//{ body }
 	private parse_arguments_list(): Expr[] {
@@ -503,7 +503,7 @@ export default class Parser {
 	}
 
 	private parse_return_expr() {
-		const return_key = this.eat()
+		this.eat()
 
 		return {
 			kind: "ReturnExpr",
@@ -557,7 +557,7 @@ export default class Parser {
 				return this.parse_fn_declaration();
 			case TokenType.Return:
 				return this.parse_return_expr();
-			// undenfined tokens 
+			// undenfined tokens
 			default:
 				console.error("Unexpected token found during parsing!", this.at().value);
 				Deno.exit(1);

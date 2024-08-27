@@ -6,7 +6,7 @@
  * to generate lua code.
  */
 
-import { BinaryExpr, CallExpr, ForStmt, FunctionDeclaration, Identifier, IfStmt, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
+import { BinaryExpr, CallExpr, Expr, ForStmt, FunctionDeclaration, Identifier, IfStmt, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
 import { TokenType } from "../frontend/lexer.ts";
 export function codegenerator(node: any): any {
     switch (node.kind) {
@@ -25,7 +25,7 @@ export function codegenerator(node: any): any {
         case "ObjectLiteral":
             return c_objectexpr(node as ObjectLiteral);
         case "ReturnExpr":
-            return codegenerator(node.toreturn);
+            return "return " + codegenerator(node.toreturn as Expr);
         case "ForStmt":
             return c_forstmt(node as ForStmt);
         case "CallExpr":
@@ -83,20 +83,15 @@ function c_functiondeclaration(node: FunctionDeclaration) {
             parameters += node.parameters[i] + ", ";
         }
     }
-    const body: any = node.body.map(codegenerator);
-    let final_body = ""
+    let body: any = "";
 
-    for (let i = 0; i < body.length; i++) {
-        if (body[i+1] == undefined) {
-            final_body += `\treturn ${body[i]}\nend`
-        } else {
-            final_body += "\t"+body[i]+"\n"
-        }
+    for (let i = 0; i < node.body.length; i++) {
+        body += "\t"+codegenerator(node.body[i])+"\n";
     }
 
     const name = node.name
 
-    return `function ${name}(${parameters})\n${final_body}\n`
+    return `function ${name}(${parameters})\n${body}\nend`
 }
 
 function c_forstmt(node: ForStmt) {
@@ -137,12 +132,12 @@ function c_ifstmt(node: IfStmt) {
 
     if (node.alt !== undefined) {
         for (let i = 0; i < node.alt.length; i++) {
-            alt += codegenerator(node.alt[i])+"\n";
+            alt += "\t"+codegenerator(node.alt[i])+"\n";
         }
     }
 
     for (let i = 0; i < node.body.length; i++) {
-        body += codegenerator(node.body[i])+"\n";
+        body += "\t"+codegenerator(node.body[i])+"\n";
     }
 
     if (alt.length > 0) {
