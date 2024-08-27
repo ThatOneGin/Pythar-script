@@ -1,12 +1,9 @@
 /**
  * Here is the code generator, it translates pythar code into some Lua code.
  * the next process will be the writer.
- * 
- * fun fact: this is not a compiler. its just a transcriber that uses ast as base
- * to generate lua code.
  */
 
-import { BinaryExpr, CallExpr, Expr, ForStmt, FunctionDeclaration, Identifier, IfStmt, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
+import { BinaryExpr, CallExpr, Expr, ForStmt, FunctionDeclaration, Identifier, IfStmt, MemberExpr, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
 import { TokenType } from "../frontend/lexer.ts";
 export function codegenerator(node: any): any {
     switch (node.kind) {
@@ -34,6 +31,8 @@ export function codegenerator(node: any): any {
             return node.body.map(codegenerator);
         case "IfStmt":
             return c_ifstmt(node as IfStmt);
+        case "MemberExpr":
+            return c_memberexpr(node as MemberExpr);
         default:
             console.log(node)
             throw new TypeError(`Unrecognized type found. '${node.kind}'`);
@@ -145,6 +144,13 @@ function c_ifstmt(node: IfStmt) {
     }
 
     return `if ${test} then ${body}end`
+}
+
+function c_memberexpr(node: MemberExpr) {
+    const name = node.object
+    const property = node.property
+
+    return `${name.symbol}.${property.symbol}\n`
 }
 
 export default class writer {

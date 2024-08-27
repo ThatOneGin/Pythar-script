@@ -15,8 +15,13 @@ if (file && args[2] == "-run") {
 } else if (file === undefined || file === null) {
 	repl();
 } else if (args[2] == "-compile"){
-	compile(file);
-	console.log("Compiled successfuly.")
+	try {
+		console.time("Compiled in")
+		compile(file);
+		console.timeEnd("Compiled in")
+	} catch(err) {
+		console.error("Cannot compile file.")
+	}
 }
 
 async function run(filename: string) {
