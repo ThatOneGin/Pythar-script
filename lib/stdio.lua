@@ -27,7 +27,8 @@ function printf(value)
 end
 
 
-
-function input()
+---standard stdin for Pythar
+---@return any
+function prompt()
     return io.read()
 end
