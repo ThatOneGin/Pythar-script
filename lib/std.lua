@@ -21,6 +21,35 @@ function Array.map(array, func)
         end
     end
 end
+---Returns true if given array contains search otherwise returns false.
+---@param array table
+---@param search any
+---@return boolean
+function Array.find(array, search)
+    for i=1, #array do
+        if array[i] == search or array[-i] == search then
+            return true
+        end
+    end
+
+    return false
+end
+---Inserts value into given array and returns the new array.
+---@param array table
+---@param value any
+---@return table
+function Array.insert(array, value)
+    table.insert(array, value)
+
+    return array
+end
+
+---Delete the first element of given array and returns it
+---@param array table
+---@return any
+function Array.shift(array)
+    return table.remove(array, 1)
+end
 
 ---Joins two arrays into one.
 ---@param array1 table

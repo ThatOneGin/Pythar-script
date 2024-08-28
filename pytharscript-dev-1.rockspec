@@ -4,8 +4,8 @@ source = {
    url = "git+https://github.com/ThatOneGin/Pythar-script.git"
 }
 description = {
-   summary = "* obs: the transpiler targets lua5.4.",
-   detailed = "* obs: the transpiler targets lua5.4.",
+   summary = "Pytharscript standard library",
+   detailed = "Pytharscript standard library",
    homepage = "https://github.com/ThatOneGin/Pythar-script",
    license = "MIT"
 }

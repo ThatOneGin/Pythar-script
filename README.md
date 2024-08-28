@@ -2,13 +2,14 @@
 Pythar-script is a language that can be interpreted directly, transpiled to lua (having almost all lua functions) or directly from command-line.
 It mainly uses functions.
 
-* obs: the transpiler targets lua5.4.
+* The transpiler targets lua5.4.
 
 ### this project is under development and if you i'll use it, you can find some problems with it.
 
 ## Dependencies
   ### - Deno
-  ### - Lua5.4 (if using transpiler)
+  ### - Luarocks
+  ### - Lua5.4
 
 ## install on windows:
   1. clone the repository using:
@@ -22,10 +23,9 @@ It mainly uses functions.
 ## install on linux:
   1. clone the repository using:
     `git clone https://github.com/ThatOneGin/Pythar-script.git`
-  2. or extract files.
-  3. use `deno compile psc.ts` in the main directory.
-  4. put the executable in PATH.
-  5. (optional) check if the installation was successful by running `psc`.
+  2. or download zip and extract files.
+  3. use `./build.sh`
+  4. (optional) check if the installation was successful by running `psc`.
 
 ## Basics:
    - declare variables using let and const (as normal):
