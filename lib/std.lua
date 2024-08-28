@@ -42,7 +42,7 @@ Io = {}
 
 ---standard stdout function for pytharscript
 ---@return nil
-function Io.printf(value)
+function printf(value)
     local function subprint(arr, indentLevel)
         local str = ""
         local indentStr = ""
@@ -218,4 +218,12 @@ function String.split(str, delimiter)
     return arr
 end
 
-return String
+Core = {
+    Array = Array,
+    Math = Math,
+    String = String,
+    Io = Io,
+    printf
+}
+
+return Core
