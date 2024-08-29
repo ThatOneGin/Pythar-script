@@ -33,6 +33,7 @@ eval_array_expr,
 	eval_member_expr,
 	eval_object_expr,
 } from "./eval/expressions.ts";
+import process from "node:process"
 
 export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
 	switch (astNode.kind) {
@@ -75,6 +76,6 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
 				"This AST Node has not yet been setup for interpretation.\n",
 				astNode
 			);
-			Deno.exit(0);
+			process.exit(1);
 	}
 }

@@ -19,6 +19,7 @@ import {
     ReturnExpr,
 } from "../frontend/ast.ts";
 import { Token, tokenize, TokenType } from "../frontend/lexer.ts";
+import process from "node:process"
 
 /**
  * Welcome to the parser, here is where the syntax of the language starts
@@ -80,7 +81,7 @@ export default class Parser {
 		const prev = (this.tokens.shift() as Token);
 		if (!prev || prev.type != type) {
 			console.error("Parser Error:\n", err, "\""+prev.value+"\"", " - Expecting: ", type);
-			Deno.exit(1);
+			process.exit(1);
 		}
 
 		return prev;
@@ -560,7 +561,7 @@ export default class Parser {
 			// undenfined tokens
 			default:
 				console.error("Unexpected token found during parsing!", this.at().value);
-				Deno.exit(1);
+				process.exit(1);
 		}
 	}
 }

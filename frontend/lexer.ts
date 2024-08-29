@@ -15,6 +15,8 @@
  * next process: parser.ts
  */
 
+import process from "node:process"
+
 export enum TokenType {
 	Number,
 	Identifier,
@@ -222,7 +224,7 @@ export function tokenize(sourceCode: string): Token[] {
 					src[0].charCodeAt(0),
 					src[0]
 				);
-				Deno.exit(1);
+				process.exit(1);
 			}
 		}
 	}

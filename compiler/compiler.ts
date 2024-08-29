@@ -5,6 +5,7 @@
 
 import { BinaryExpr, CallExpr, Expr, ForStmt, FunctionDeclaration, Identifier, IfStmt, MemberExpr, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
 import { TokenType } from "../frontend/lexer.ts";
+import * as fs from "node:fs";
 export function codegenerator(node: any): any {
     switch (node.kind) {
         case "VarDeclaration":
@@ -166,6 +167,10 @@ export default class writer {
             file_content += cd+"\n"
         }
 
-        Deno.writeTextFile("a.lua", file_content);
+        fs.writeFile("a.lua", file_content, (err) => {
+            if (err) {
+                console.error("fatal error: \n\t" + err)
+            }
+        });
     }
 }

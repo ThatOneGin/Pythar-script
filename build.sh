@@ -4,7 +4,7 @@ echo "Initializing installation"
 INSTALL_DIR="/usr/local/bin"
 
 #compile to executable
-deno compile psc.ts
+deno compile -A psc.ts
 
 sudo mv psc "$INSTALL_DIR"
 
