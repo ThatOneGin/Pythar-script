@@ -3,7 +3,7 @@
  * the next process will be the writer.
  */
 
-import { BinaryExpr, CallExpr, Expr, ForStmt, FunctionDeclaration, Identifier, IfStmt, MemberExpr, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
+import { AssignmentExpr, BinaryExpr, CallExpr, Expr, ForStmt, FunctionDeclaration, Identifier, IfStmt, MemberExpr, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
 import { TokenType } from "../frontend/lexer.ts";
 import * as fs from "node:fs";
 export function codegenerator(node: any): any {
@@ -34,6 +34,8 @@ export function codegenerator(node: any): any {
             return c_ifstmt(node as IfStmt);
         case "MemberExpr":
             return c_memberexpr(node as MemberExpr);
+        case "AssignmentExpr":
+            return c_assignmentexpr(node as AssignmentExpr);
         default:
             console.log(node)
             throw new TypeError(`Unrecognized type found. '${node.kind}'`);
@@ -152,6 +154,10 @@ function c_memberexpr(node: MemberExpr) {
     const property = node.property
 
     return `${name.symbol}.${property.symbol}\n`
+}
+
+function c_assignmentexpr(node: AssignmentExpr) {
+    return `${node.assigne.symbol} = ${node.value.value}`
 }
 
 export default class writer {
