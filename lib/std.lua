@@ -1,4 +1,5 @@
 ---Standard array library of Pythar
+---@class ARRAYLIB
 Array = {}
 
 ---iterates over given array and executes function in each element
@@ -6,7 +7,7 @@ Array = {}
 ---@param func function
 function Array.map(array, func)
     if array == nil then
-        print("Error: on `map` function missing `array` parameter.") 
+        print("Error: on `map` function missing `array` parameter.")
         os.exit(1)
     elseif array == nil then
         print("Error: on `map` function missing `func` parameter.")
@@ -67,6 +68,7 @@ function Array.join(array1, array2)
 end
 
 ---Standard input output library for pytharscript
+---@class IO
 Io = {}
 
 ---standard stdout function for pytharscript
@@ -94,7 +96,11 @@ function printf(value)
         end
         return str
     end
-    subprint(value)
+    if type(value) == "table" then
+        subprint(value)
+    else
+        io.write(value)
+    end
 end
 
 
@@ -105,6 +111,7 @@ function Io.prompt()
 end
 
 ---Standard math library of Pythar.
+---@class MATHLIB
 Math = {}
 
 ---Fibonacci sequence function.
@@ -200,6 +207,23 @@ function Math.dsigmoid(x)
     return Math.sigmoid(x) * (1 - Math.sigmoid(x))
 end
 
+function Math.random(minimum, maximum)
+    if maximum == nil then return math.random(minimum) end
+    if minimum == nil and maximum == nil then return math.random() end
+    return math.random(minimum, maximum)
+end
+
+---A function based on the Standard Normal Distribution or Gaussian Distribution.
+---
+---f(x) = e ^ -x / 2 / 2pi ^ (1 / 2)
+---@param x number|integer
+---@return number
+function Math.randn(x)
+    local rnm = math.exp(-x ^ 2 / 2)
+    local sqrtpi = (Math.pi * 2) ^ (1 / 2)
+    return rnm / sqrtpi
+end
+
 ---Standard string library for Pythar.
 String = {}
 
@@ -247,12 +271,136 @@ function String.split(str, delimiter)
     return arr
 end
 
+---@class Matrix
+---@field Matrix table
+Matrix = {}
+
+function Matrix.create(rows, cols, value)
+    local mt = {}
+    for i=1, rows do
+        local arr = {}
+        for j=1, cols do
+            arr[j] =  value
+        end
+        table.insert(mt, arr)
+    end
+    return mt
+end
+---Returns the dot product of two arrays
+---@param matrix1 table
+---@param matrix2 table
+---@param preservematrix false|boolean
+---@return number[]|number
+function Matrix.dot(matrix1, matrix2, preservematrix)
+    if preservematrix == nil then preservematrix = false end
+    if not preservematrix then
+        local result = 0
+        for i=1, #matrix1[1] do
+            for j=1, #matrix2[i] do
+                result = result + matrix1[i][j] * matrix2[i][j]
+            end
+        end
+        return result
+    else
+        local arr = {}
+        for i=1, #matrix1[1] do
+            for j=1, #matrix2[i] do
+                arr[i] = matrix1[i][j] * matrix2[i][j]
+            end
+        end
+        return arr
+    end
+end
+---Sum up two matrices together.
+---@param matrix1 table[]
+---@param matrix2 table[]
+---@return table
+function Matrix.sum(matrix1, matrix2)
+    local mt = {}
+    for i=1, #matrix1 do
+        for j=1, #matrix2[i] do
+            mt[i][j] = matrix1[i][j] + matrix2[i][j]
+        end
+    end
+    return mt
+end
+---Subtract two matrices.
+---@param matrix1 table[]
+---@param matrix2 table[]
+---@return table
+function Matrix.sub(matrix1, matrix2)
+    local mt = {}
+    for i=1, #matrix1 do
+        for j=1, #matrix2[i] do
+            mt[i][j] = matrix1[i][j] - matrix2[i][j]
+        end
+    end
+    return mt
+end
+---mutiplies MatrixA by the scalar (an integer/float)
+---@param MatrixA table[]
+---@param scalar number|integer
+---@return table
+function Matrix.EscalarMultiply(MatrixA, scalar)
+    local matrix = Matrix.create(#MatrixA, #MatrixA[1], 0)
+    for i=1, #MatrixA do
+        for j=1, #MatrixA[1] do
+            matrix[i][j] = MatrixA[i][j] * scalar
+        end
+    end
+    return matrix
+end
+---given rows and collumns, generate a new matrix with a table called values that have (minimum, maximum) variables.
+---@param rows number
+---@param cols number
+---@param value table
+---@return table
+function Matrix.RandomMatrix(rows, cols, value)
+    local matrix = Matrix.create(rows, cols, 0)
+
+    for i=1, #matrix do
+        for j=1, #matrix[i] do
+            matrix[i][j] = math.random(value.minimum, value.maximum)
+        end
+    end
+    return matrix
+end
+
+---Transpose given matrix.
+---
+---given:
+---
+---[
+---    [1, 2],
+---    [3, 4],
+---    [5, 6]
+---]
+---
+---output should be:
+---
+---[
+---     [1, 2, 3],
+---     [4, 5, 6]
+---]
+---@param matrix table
+---@return table
+function Matrix.transpose(matrix)
+    local mt = Matrix.create(#matrix[1], #matrix, 0)
+    for i=1, #matrix[1] do
+        for j=1, #matrix do
+            mt[i][j] = matrix[j][i]
+        end
+    end
+    return mt
+end
+
 Core = {
     Array = Array,
     Math = Math,
     String = String,
     Io = Io,
-    printf
+    printf = printf,
+    Matrix = Matrix
 }
 
 return Core

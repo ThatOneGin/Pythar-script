@@ -1,6 +1,7 @@
 /**
  * Here is the code generator, it translates pythar code into some Lua code.
  * the next process will be the writer.
+ * i really like to call it coral transpiler
  */
 
 import { AssignmentExpr, BinaryExpr, CallExpr, Expr, ForStmt, FunctionDeclaration, Identifier, IfStmt, MemberExpr, ObjectLiteral, VarDeclaration } from "../frontend/ast.ts";
@@ -53,7 +54,7 @@ function c_vardeclaration(node: VarDeclaration) {
         return identifier+" = "+value //also no semicolons
     } else {
         return "local "+identifier //no semicolons because they are optional D:
-    }
+    } //never gonna give you up never gonna let you down (semicolon i love you)
 }
 
 // translates binary expresssion like 2 + 2 - (2 * 5 / 2)
@@ -75,7 +76,7 @@ function c_objectexpr(node: ObjectLiteral) {
     }
     return "{\n"+translated+"}"
 }
-
+//get all fn parameters, body and name and translates into lua functions (global by default)
 function c_functiondeclaration(node: FunctionDeclaration) {
     let parameters = "";
     for (let i = 0; i < node.parameters.length; i++) {
@@ -95,7 +96,7 @@ function c_functiondeclaration(node: FunctionDeclaration) {
 
     return `function ${name}(${parameters})\n${body}\nend`
 }
-
+//default lua for statement
 function c_forstmt(node: ForStmt) {
     if (node.init.value === undefined) throw `Initial value of ${node.init} is undefined|NULL.`
     node.init.value.value += 1
@@ -110,7 +111,7 @@ function c_forstmt(node: ForStmt) {
 
     return `for ${init}, ${max},${upd} do\n\t${body}\nend`
 }
-
+// fn call expressions e.g sayhello(), getipaddress()
 function c_callexpr(node: CallExpr) {
     let name = codegenerator(node.caller)
     let args = "";
@@ -126,7 +127,7 @@ function c_callexpr(node: CallExpr) {
 
     return `${name}(${args})`;
 }
-
+//default if statement, if <condition> then <piece of code> end
 function c_ifstmt(node: IfStmt) {
     const test = codegenerator(node.test)
     let body = ""
@@ -148,14 +149,14 @@ function c_ifstmt(node: IfStmt) {
 
     return `if ${test} then ${body}end`
 }
-
+// e.g foo.bar()
 function c_memberexpr(node: MemberExpr) {
     const name = node.object
     const property = node.property
 
     return `${name.symbol}.${property.symbol}\n`
 }
-
+// allow code generator to translate assignment expressions e.g let x = 2; x = 'hello world'
 function c_assignmentexpr(node: AssignmentExpr) {
     return `${node.assigne.symbol} = ${node.value.value}`
 }
