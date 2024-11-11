@@ -5,25 +5,6 @@ import Parser from "./frontend/parser.ts";
 import Environment, { CreateGlobalENV } from "./runtime/environment.ts";
 import { makereadable } from "./runtime/eval/convert.ts";
 import { evaluate } from "./runtime/interpreter.ts";
-import writer from "./compiler/compiler.ts";
-import { codegenerator } from "./compiler/compiler.ts";
-
-let args = process.argv;
-let file = args[3];
-
-if (file && args[2] == "-run") {
-	run(file);
-} else if (file === undefined || file === null) {
-	repl();
-} else if (args[2] == "-compile"){
-	try {
-		console.time("Compiled in")
-		compile(file);
-		console.timeEnd("Compiled in")
-	} catch(err) {
-		console.error("Cannot compile file.")
-	}
-}
 
 async function run(filename: string) {
 	const parser = new Parser();
@@ -65,7 +46,7 @@ async function compile(file: string) {
 	const parser = new Parser();
 	const input = await fs.readFileSync(file, "utf-8");
 	const ast = parser.produceAST(input);
-	const transformer = codegenerator(ast);
-	const compiler = new writer(transformer);
-	compiler.compile();
+	console.log(ast)
 }
+
+run("main.psc")
