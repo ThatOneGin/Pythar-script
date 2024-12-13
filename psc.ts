@@ -49,4 +49,5 @@ async function compile(file: string) {
 	console.log(ast)
 }
 
-run("main.psc")
+let file = process.argv[2]
+run(file)

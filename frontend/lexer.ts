@@ -11,11 +11,7 @@ export enum TokenType {
 
   Let,
   Const,
-  Var,
   Fn,
-
-  Mutable,
-  Immutable,
 
   UnderLine,
   Exclamation,
@@ -57,10 +53,7 @@ const KEYWORDS: Record<string, TokenType> = {
   fn: TokenType.Fn,
   if: TokenType.If,
   for: TokenType.For,
-  var: TokenType.Var,
   else: TokenType.Else,
-  mut: TokenType.Mutable,
-  immut: TokenType.Immutable,
   return: TokenType.Return
 };
 
@@ -97,81 +90,81 @@ function isint(str: string) {
  */
 export function tokenize(sourceCode: string): Token[] {
   const tokens = new Array<Token>();
-  const src = sourceCode.split("");
+  const src = sourceCode.split("").reverse();
 
   while (src.length > 0) {
 
-    if (src[0] == "(") {
-      tokens.push(token(src.shift(), TokenType.OpenParen));
-    } else if (src[0] == ")") {
-      tokens.push(token(src.shift(), TokenType.CloseParen));
-    } else if (src[0] == "{") {
-      tokens.push(token(src.shift(), TokenType.OpenBrace));
-    } else if (src[0] == "}") {
-      tokens.push(token(src.shift(), TokenType.CloseBrace));
-    } else if (src[0] == "[") {
-      tokens.push(token(src.shift(), TokenType.OpenBracket));
-    } else if (src[0] == "]") {
-      tokens.push(token(src.shift(), TokenType.CloseBracket));
-    } else if (src[0] == "_") {
-      tokens.push(token(src.shift(), TokenType.UnderLine));
+    if (src[src.length - 1] == "(") {
+      tokens.push(token(src.pop(), TokenType.OpenParen));
+    } else if (src[src.length - 1] == ")") {
+      tokens.push(token(src.pop(), TokenType.CloseParen));
+    } else if (src[src.length - 1] == "{") {
+      tokens.push(token(src.pop(), TokenType.OpenBrace));
+    } else if (src[src.length - 1] == "}") {
+      tokens.push(token(src.pop(), TokenType.CloseBrace));
+    } else if (src[src.length - 1] == "[") {
+      tokens.push(token(src.pop(), TokenType.OpenBracket));
+    } else if (src[src.length - 1] == "]") {
+      tokens.push(token(src.pop(), TokenType.CloseBracket));
+    } else if (src[src.length - 1] == "_") {
+      tokens.push(token(src.pop(), TokenType.UnderLine));
     }
     else if (
-      src[0] == "*" ||
-      src[0] == "/" ||
-      src[0] == "%" ||
-      src[0] == ">" ||
-      src[0] == "<"
+      src[src.length - 1] == "*" ||
+      src[src.length - 1] == "/" ||
+      src[src.length - 1] == "%" ||
+      src[src.length - 1] == ">" ||
+      src[src.length - 1] == "<"
     ) {
-      tokens.push(token(src.shift(), TokenType.BinaryOperator));
-    } else if (src[0] == "=") {
-      src.shift();
-      if (src[0] == "=") {
-        src.shift();
+      tokens.push(token(src.pop(), TokenType.BinaryOperator));
+    } else if (src[src.length - 1] == "=") {
+      src.pop();
+      if (src[src.length - 1] == "=") {
+        src.pop();
         tokens.push(token("==", TokenType.EqualsCompare));
       } else {
         tokens.push(token("=", TokenType.Equals));
       }
-    } else if (src[0] == "!") {
-      src.shift();
-      if (String(src[0]) == "=") {
-        src.shift();
+    } else if (src[src.length - 1] == "!") {
+      src.pop();
+      if (String(src[src.length - 1]) == "=") {
+        src.pop();
         tokens.push(token("!=", TokenType.NotEqualsCompare));
       } else {
         tokens.push(token("!", TokenType.Exclamation));
       }
-    } else if (src[0] == ";") {
-      tokens.push(token(src.shift(), TokenType.Semicolon));
-    } else if (src[0] == ":") {
-      tokens.push(token(src.shift(), TokenType.Colon));
-    } else if (src[0] == "+") {
-      src.shift();
+    } else if (src[src.length - 1] == ";") {
+      tokens.push(token(src.pop(), TokenType.Semicolon));
+    } else if (src[src.length - 1] == ":") {
+      tokens.push(token(src.pop(), TokenType.Colon));
+    } else if (src[src.length - 1] == "+") {
+      src.pop();
 
-      if (src[0] == "+") {
-        src.shift();
+      if (src[src.length - 1] == "+") {
+        src.pop();
         tokens.push(token("++", TokenType.PlusPLus));
       } else {
         tokens.push(token("+", TokenType.BinaryOperator));
       }
-    } else if (src[0] == "-") {
-      src.shift();
+    } else if (src[src.length - 1] == "-") {
+      src.pop();
 
-      if (src[0] == "-") {
-        src.shift();
+      if (src[src.length - 1] == "-") {
+        src.pop();
         tokens.push(token("--", TokenType.MinusMinus));
       } else {
         tokens.push(token("-", TokenType.BinaryOperator));
       }
-    } else if (src[0] == ",") {
-      tokens.push(token(src.shift(), TokenType.Comma));
-    } else if (src[0] == ".") {
-      tokens.push(token(src.shift(), TokenType.Dot));
-    } else if (src[0] == '"') {
+    } else if (src[src.length - 1] == ",") {
+      tokens.push(token(src.pop(), TokenType.Comma));
+    } else if (src[src.length - 1] == ".") {
+      tokens.push(token(src.pop(), TokenType.Dot));
+    } else if (src[src.length - 1] == '"') {
       let str = ""
-      src.shift()
+      src.pop()
 
       while (src.length > 0) {
-        const k = src.shift()
+        const k = src.pop()
 
         if (k == '"') {
           break
@@ -182,19 +175,19 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(str, TokenType.String))
     } else {
 
-      if (isint(src[0])) {
+      if (isint(src[src.length - 1])) {
         let num = "";
-        while (src.length > 0 && isint(src[0])) {
-          num += src.shift();
+        while (src.length > 0 && isint(src[src.length - 1])) {
+          num += src.pop();
         }
 
         tokens.push(token(num, TokenType.Number));
-      } else if (isalpha(src[0], true)) {
+      } else if (isalpha(src[src.length - 1], true)) {
         let ident = "";
-        ident += src.shift();
+        ident += src.pop();
 
-        while (src.length > 0 && isalpha(src[0])) {
-          ident += src.shift();
+        while (src.length > 0 && isalpha(src[src.length - 1])) {
+          ident += src.pop();
         }
 
         const reserved = KEYWORDS[ident];
@@ -204,13 +197,13 @@ export function tokenize(sourceCode: string): Token[] {
         } else {
           tokens.push(token(ident, TokenType.Identifier));
         }
-      } else if (isskippable(src[0])) {
-        src.shift();
+      } else if (isskippable(src[src.length - 1])) {
+        src.pop();
       } else {
         console.error(
           "Unreconized character found in source: ",
-          src[0].charCodeAt(0),
-          src[0]
+          src[src.length - 1].charCodeAt(0),
+          src[src.length - 1]
         );
         process.exit(1);
       }

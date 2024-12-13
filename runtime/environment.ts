@@ -10,6 +10,7 @@ import {
   ObjectVal,
   RuntimeVal,
 } from "./values.ts";
+import { makereadable } from "./eval/convert.ts"
 
 export function CreateGlobalENV() {
   const env = new Environment();
@@ -18,34 +19,31 @@ export function CreateGlobalENV() {
   env.declareVar("false", MK_BOOL(false), true);
   env.declareVar("null", MK_NULL(), true);
   env.declareVar(
-    "println",
-    MK_NATIVE_FN((args, scope) => {
-      console.log(...args);
+    "print",
+    MK_NATIVE_FN((args) => {
+      let str = "";
+      for (let i = 0; i < args.length; i++) {
+        str += makereadable(args[i]) + " ";
+      }
+      console.log(str);
       return MK_NULL();
     }),
     true
   );
-  env.declareVar("mathpi", MK_NUMBER(Math.PI), true)
-  env.declareVar("matheuler", MK_NUMBER(Math.E), true)
-  env.declareVar("mathsqrt", MK_NATIVE_FN((args) => {
+  env.declareVar("pi", MK_NUMBER(Math.PI), true)
+  env.declareVar("euler", MK_NUMBER(Math.E), true)
+  env.declareVar("sqrt", MK_NATIVE_FN((args) => {
     const arg = (args[0] as NumberVal).value;
     return MK_NUMBER(Math.sqrt(arg));
   }), true),
-    env.declareVar("mathrandom", MK_NATIVE_FN((args) => {
-      const arg1 = (args[0] as NumberVal).value;
-      const arg2 = (args[1] as NumberVal).value;
+  env.declareVar("random", MK_NATIVE_FN((args) => {
+    const arg1 = (args[0] as NumberVal).value;
+    const arg2 = (args[1] as NumberVal).value;
 
-      const min = Math.ceil(arg1);
-      const max = Math.floor(arg2);
-      return MK_NUMBER(Math.floor(Math.random() * (max - min + 1)) + min);
-    }), true)
-
-
-
-  function timeFunction(_args: RuntimeVal[], _env: Environment) {
-    return MK_NUMBER(Date.now());
-  }
-  env.declareVar("time", MK_NATIVE_FN(timeFunction), true);
+    const min = Math.ceil(arg1);
+    const max = Math.floor(arg2);
+    return MK_NUMBER(Math.floor(Math.random() * (max - min + 1)) + min);
+  }), true)
 
   return env;
 }
